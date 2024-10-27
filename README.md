@@ -16,6 +16,7 @@ vi publish/config.json
 ```
 
 Here is the default sample configuration:
+Original Source
 
 ```json
 {
