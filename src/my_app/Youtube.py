@@ -1,3 +1,4 @@
+import urllib.request
 from googleapiclient.discovery import build
 from jproperties import Properties
 
@@ -31,19 +32,27 @@ class Youtube():
         request = youtube.videos().list(part='snippet,statistics', id=video_id)
         details = request.execute()
         title = details['items'][0]['snippet']['title']
+        thumbnailUrl = details['items'][0]['snippet']['thumbnails']['medium']['url'];
+        #print(thumbnailUrl)
+
+        # curl 요청
+        #os.system("curl " + thumbnailUrl + " > ./tmp/{0}".format(thumbnailUrl))
+        # 이미지 요청 및 다운로드
+        urllib.request.urlretrieve(thumbnailUrl, "./tmp/{0}.jpg".format(video_id))
         
         return title 
 
     def main(self):
         results = self.search_videos()
         video_list=results['items']
-        resultArr = {}
+        titleUrlArr = {}
+        titleIdArr = {}
         for i in range(len(video_list)):
             video_id=video_list[i]['id']['videoId']
             title = self.get_title(i+1,video_id)
-            resultArr[title] = 'https://www.youtube.com/watch?v={0}'.format(video_id)
-
-        return resultArr
+            titleUrlArr[title] = 'https://www.youtube.com/watch?v={0}'.format(video_id)
+            titleIdArr[title] = video_id 
+        return titleUrlArr, titleIdArr 
             
 #query = 'Gfg'
 #maxResults= 10
